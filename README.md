@@ -3,7 +3,7 @@
 **MedReport Copilot** is a high-performance, agentic AI platform designed to ingest complex medical reports (PDF, plain text, or voice dictation audio), perform fine-tuned ML medical specialty classification, execute confidence-based inference routing, orchestrate an 8-agent pipeline (or Deep Agent / LangGraph orchestrator), cross-verify with RAG evidence, enforce strict clinical safety guardrails, and present patient-friendly explanations with browser Text-to-Speech (TTS).
 
 # Deploy Link https://medreportproject.onrender.com/
-
+http://127.0.0.1:8000/
 ---
 
 ## Technical Stack & Architecture
