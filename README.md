@@ -2,6 +2,8 @@
 
 **MedReport Copilot** is a high-performance, agentic AI platform designed to ingest complex medical reports (PDF, plain text, or voice dictation audio), perform fine-tuned ML medical specialty classification, execute confidence-based inference routing, orchestrate an 8-agent pipeline (or Deep Agent / LangGraph orchestrator), cross-verify with RAG evidence, enforce strict clinical safety guardrails, and present patient-friendly explanations with browser Text-to-Speech (TTS).
 
+# Deploy Link https://medreportproject.onrender.com/
+
 ---
 
 ## Technical Stack & Architecture
@@ -34,7 +36,7 @@
                Confidence >= 0.75         Confidence < 0.75
                            │                         │
                            ▼                         ▼
-                      ⚡ FAST PATH            🧠 DEEP AGENT PATH
+                       FAST PATH             DEEP AGENT PATH
                     (Direct Stream)       (LangGraph Orchestrator)
                            │                         │
                            └────────────┬────────────┘
@@ -133,15 +135,15 @@ D:\medical_report_ai/
 ├── app/
 │   └── main.py                     # FastAPI application server & REST endpoints
 ├── agents/
-│   ├── router_agent.py             # Agent 1: Intake & Router Agent
-│   ├── clinical_nlp_agent.py       # Agent 2: Clinical NLP Entity Extractor
-│   ├── specialty_agent.py          # Agent 3: Medical Specialty Classifier Agent
-│   ├── rag_agent.py                # Agent 4: Evidence / RAG Agent
-│   ├── fact_checker_agent.py       # Agent 5: Fact Checker (Hallucination detector)
-│   ├── safety_agent.py             # Agent 6: Clinical Safety Guardrails
-│   ├── patient_explanation_agent.py# Agent 7: Patient-Friendly Plain English Translation
-│   ├── citation_agent.py           # Agent 8: Citation Verifier & Annotator
-│   └── deep_orchestrator.py        # Agent 9: Deep Agent / LangGraph Orchestrator
+│   ├── router_agent.py             # Intake & Router Agent
+│   ├── clinical_nlp_agent.py       # Clinical NLP Entity Extractor
+│   ├── specialty_agent.py          # Medical Specialty Classifier Agent
+│   ├── rag_agent.py                # Evidence / RAG Agent
+│   ├── fact_checker_agent.py       # Fact Checker (Hallucination detector)
+│   ├── safety_agent.py             # Clinical Safety Guardrails
+│   ├── patient_explanation_agent.py# Patient-Friendly Plain English Translation
+│   ├── citation_agent.py           # Citation Verifier & Annotator
+│   └── deep_orchestrator.py        #  Deep Agent / LangGraph Orchestrator
 ├── ml/
 │   ├── dataset.py                  # Stratified clinical dataset generator
 │   ├── train_baseline.py           # TF-IDF + Logistic Regression trainer
