@@ -14,4 +14,8 @@ services:
     volumes:
       - ./models:/app/models
       - ./data/knowledge:/app/data/knowledge
+      - ./frontend:/app/frontend
+      - ./app:/app/app
+      - ./services:/app/services
+      - ./agents:/app/agents
     restart: unless-stopped

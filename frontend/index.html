@@ -3,181 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedReport Copilot — Agentic AI Medical Report Understanding Platform</title>
-    <meta name="description" content="Agentic AI platform for medical report comprehension, intelligent inference routing, RAG evidence retrieval, fact checking, safety verification, and TTS.">
+    <title>MedReport Copilot — Clinical Intelligence Cockpit & Multi-Agent HUD</title>
+    <meta name="description" content="Next-Gen Agentic AI Medical Report Comprehension Platform with DistilBERT NLP, Confidence Routing, Organ Radar, RAG Guideline Retrieval, and TTS.">
+    
+    <!-- Google Fonts: Outfit, Inter, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System CSS -->
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-    <!-- Header Navigation -->
-    <header class="app-header">
-        <div class="header-container">
-            <div class="brand">
-                <div class="brand-icon">✚</div>
-                <div class="brand-text">
+    <!-- Cockpit Header Navigation -->
+    <header class="cockpit-header">
+        <div class="header-inner">
+            <div class="brand-wrapper">
+                <div class="brand-logo-hex">
+                    <span>✚</span>
+                </div>
+                <div class="brand-titles">
                     <h1>MedReport Copilot</h1>
-                    <span class="brand-subtitle">Agentic AI Medical Report Understanding Platform</span>
+                    <div class="brand-badge">
+                        <span>Clinical AI Orchestrator</span>
+                        <span class="pill">v1.0.0 HUD</span>
+                    </div>
                 </div>
             </div>
-            <div class="header-status">
-                <div id="systemHealthBadge" class="health-badge pulse">
-                    <span class="dot"></span> System Ready
+
+            <!-- Telemetry & Actions -->
+            <div class="header-telemetry">
+                <div class="telemetry-node">
+                    <span class="status-dot"></span>
+                    <span class="label">System Core:</span>
+                    <strong id="systemStatusText" style="color: var(--emerald-green);">ONLINE</strong>
                 </div>
+                <button class="header-action-btn" id="btnExportSummary" title="Export Formatted Brief">
+                    <span>📑</span> Export Brief
+                </button>
+                <button class="header-action-btn" id="btnInspectJson" title="Inspect Raw Multi-Agent JSON">
+                    <span>⚡</span> JSON Telemetry
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="app-layout">
+    <!-- Main Workspace Grid -->
+    <main class="cockpit-grid">
         
-        <!-- Left Panel: Input & Control -->
-        <section class="panel input-panel">
-            <div class="panel-header">
-                <h2>1. Report Intake</h2>
-                <p>Provide clinical report text, upload a PDF file, or dictate voice audio.</p>
-            </div>
-
-            <!-- Input Tabs -->
-            <div class="tab-buttons">
-                <button class="tab-btn active" data-tab="textTab" id="tabBtnText">Paste Text</button>
-                <button class="tab-btn" data-tab="pdfTab" id="tabBtnPdf">Upload PDF</button>
-                <button class="tab-btn" data-tab="voiceTab" id="tabBtnVoice">🎙 Record Voice</button>
-            </div>
-
-            <!-- Tab 1: Text Input -->
-            <div class="tab-content active" id="textTab">
-                <label for="reportTextInput" class="input-label">Clinical Report Content</label>
-                <textarea id="reportTextInput" placeholder="Paste medical report, ECG findings, laboratory results, or radiological report here..." rows="9"></textarea>
-                
-                <div class="preset-buttons">
-                    <span class="preset-label">Sample Presets:</span>
-                    <button class="preset-btn" onclick="loadPreset('cardio')">Cardiology ECG</button>
-                    <button class="preset-btn" onclick="loadPreset('neuro')">Neurology MRI</button>
-                    <button class="preset-btn" onclick="loadPreset('gastro')">Gastroenterology</button>
-                </div>
-            </div>
-
-            <!-- Tab 2: PDF Upload -->
-            <div class="tab-content" id="pdfTab">
-                <div class="drop-zone" id="pdfDropZone">
-                    <div class="drop-icon">📄</div>
-                    <p class="drop-title">Drag & drop your PDF medical report here</p>
-                    <p class="drop-sub">or click to browse files (.pdf)</p>
-                    <input type="file" id="pdfFileInput" accept=".pdf" hidden>
-                    <div id="pdfFileSelected" class="file-selected-name"></div>
-                </div>
-            </div>
-
-            <!-- Tab 3: Voice Dictation -->
-            <div class="tab-content" id="voiceTab">
-                <div class="voice-recorder">
-                    <div class="mic-container">
-                        <button id="recordMicBtn" class="mic-btn">
-                            <span class="mic-icon">🎙</span>
-                        </button>
+        <!-- =================================================================
+             Left Wing: Medical Intake Studio
+             ================================================================= -->
+        <section class="intake-studio">
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div class="panel-title-group">
+                        <h2><span>📥</span> Report Intake Studio</h2>
+                        <p>Provide unstructured clinical findings, lab panels, or dictation.</p>
                     </div>
-                    <div id="recordStatus" class="record-status">Click microphone to start recording dictation</div>
-                    <div id="recordingTimer" class="record-timer">00:00</div>
                 </div>
-            </div>
 
-            <!-- Analyze Action Button -->
-            <button id="analyzeBtn" class="primary-btn">
-                <span id="analyzeBtnText">⚡ Analyze Report with Copilot</span>
-                <span id="analyzeSpinner" class="spinner hidden"></span>
-            </button>
+                <!-- Input Mode Switcher -->
+                <div class="intake-tabs">
+                    <button class="tab-trigger active" data-tab="textTab" id="tabBtnText">
+                        <span>📝</span> Text Report
+                    </button>
+                    <button class="tab-trigger" data-tab="pdfTab" id="tabBtnPdf">
+                        <span>📄</span> Upload PDF
+                    </button>
+                    <button class="tab-trigger" data-tab="voiceTab" id="tabBtnVoice">
+                        <span>🎙️</span> Voice Dictation
+                    </button>
+                </div>
+
+                <!-- Mode 1: Smart Text Input -->
+                <div class="tab-pane active" id="textTab" style="margin-top: 1rem;">
+                    <div class="input-wrapper">
+                        <textarea id="reportTextInput" class="hud-textarea" placeholder="Paste unstructured medical report, ECG findings, discharge summary, or imaging report..." rows="8"></textarea>
+                    </div>
+                    
+                    <!-- Clinical Presets -->
+                    <div class="presets-bar">
+                        <span class="presets-label">⚡ Clinical Benchmark Presets:</span>
+                        <div class="preset-chips">
+                            <button type="button" class="preset-chip" onclick="loadPreset('cardio')">
+                                <span>❤️</span> Cardiology ECG
+                            </button>
+                            <button type="button" class="preset-chip" onclick="loadPreset('neuro')">
+                                <span>🧠</span> Neurology MRI
+                            </button>
+                            <button type="button" class="preset-chip" onclick="loadPreset('gastro')">
+                                <span>🧪</span> Gastroenterology
+                            </button>
+                            <button type="button" class="preset-chip" onclick="loadPreset('pulmo')">
+                                <span>🫁</span> Pulmonology
+                            </button>
+                            <button type="button" class="preset-chip" onclick="loadPreset('ortho')">
+                                <span>🦴</span> Orthopedics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode 2: PDF Document Dropzone -->
+                <div class="tab-pane" id="pdfTab" style="margin-top: 1rem;">
+                    <div class="dropzone-container" id="pdfDropZone">
+                        <div class="dropzone-icon">📋</div>
+                        <div class="dropzone-title">Drop Clinical PDF Report Here</div>
+                        <div class="dropzone-sub">or click to browse local documents (.pdf)</div>
+                        <input type="file" id="pdfFileInput" accept=".pdf" hidden>
+                        <div id="pdfFileSelected" class="selected-file-badge" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Mode 3: Voice Dictation & Real-Time Audio Waveform Visualizer -->
+                <div class="tab-pane" id="voiceTab" style="margin-top: 1rem;">
+                    <div class="voice-hud">
+                        <div class="waveform-canvas-wrapper">
+                            <canvas id="audioWaveformCanvas"></canvas>
+                        </div>
+                        
+                        <button id="recordMicBtn" class="mic-hologram-btn" title="Toggle Dictation">
+                            <span>🎙️</span>
+                        </button>
+                        
+                        <div class="voice-status-group">
+                            <div id="recordStatus" class="voice-status-text">Click microphone to start voice dictation</div>
+                            <div id="recordingTimer" class="voice-timer">00:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Master AI Launch Button -->
+                <div style="margin-top: 1.25rem;">
+                    <button id="analyzeBtn" class="launch-ai-btn">
+                        <span id="analyzeBtnText">⚡ Launch Multi-Agent Analysis</span>
+                        <span id="analyzeSpinner" class="spinner-ring" style="display: none;"></span>
+                    </button>
+                </div>
+
+            </div>
         </section>
 
-        <!-- Right Panel: Results & Agentic Insights -->
-        <section class="panel results-panel">
+        <!-- =================================================================
+             Right Wing: Intelligence HUD & Visual Analytics
+             ================================================================= -->
+        <section class="intelligence-hud">
             
             <!-- Default Welcome State -->
-            <div id="emptyState" class="empty-state">
-                <div class="empty-icon">🏥</div>
-                <h3>Ready to Analyze Clinical Data</h3>
-                <p>Paste a medical report or select a sample preset on the left to trigger the 8-agent orchestration pipeline, confidence-based routing, and RAG verification.</p>
+            <div id="emptyState" class="empty-hologram">
+                <div class="hologram-beacon">🩺</div>
+                <h3>Clinical AI Cockpit Standby</h3>
+                <p>Select a preset or upload clinical data on the left to trigger the 8-agent LangGraph pipeline, anatomical target radar, and RAG verification engine.</p>
             </div>
 
-            <!-- Live Results Container -->
-            <div id="resultsContainer" class="results-container hidden">
+            <!-- Active Analysis Deck -->
+            <div id="resultsContainer" class="analytics-deck" style="display: none;">
                 
-                <!-- Classification & Route Header -->
-                <div class="results-header-card">
-                    <div class="meta-row">
-                        <div class="specialty-badge" id="specialtyBadge">
-                            <span class="badge-label">Specialty:</span>
-                            <span id="specialtyValue" class="badge-value">Cardiovascular / Pulmonary</span>
+                <!-- Telemetry Trio: Organ Radar + Radial Confidence Gauge + Routing Badge -->
+                <div class="telemetry-trio">
+                    
+                    <!-- 1. Anatomical Organ Radar -->
+                    <div class="organ-radar-card">
+                        <div class="radar-title">Anatomical Target</div>
+                        <div class="organ-svg-container" id="organRadarVisual">
+                            <!-- Dynamic SVG Organ Icon -->
+                            <svg viewBox="0 0 100 100" width="85" height="85" id="organSvgIcon">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(14, 165, 233, 0.2)" stroke-width="2" stroke-dasharray="4 4" />
+                                <circle cx="50" cy="50" r="32" fill="none" stroke="rgba(14, 165, 233, 0.4)" stroke-width="1.5" />
+                                <text id="organGlyph" x="50" y="58" font-size="34" text-anchor="middle" dominant-baseline="middle">🫀</text>
+                            </svg>
                         </div>
-                        <div class="confidence-badge" id="confidenceBadge">
-                            <span id="confidenceValue">91.2% Confidence</span>
+                        <div id="organTargetLabel" class="organ-target-tag">Cardiovascular</div>
+                    </div>
+
+                    <!-- 2. Radial Holographic Confidence Gauge -->
+                    <div class="confidence-gauge-card">
+                        <div class="radar-title">Model Confidence</div>
+                        <div class="gauge-svg-wrap">
+                            <svg class="gauge-svg" viewBox="0 0 100 100" width="90" height="90">
+                                <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
+                                <circle class="gauge-fill" id="confidenceGaugeCircle" cx="50" cy="50" r="40"></circle>
+                            </svg>
+                            <div class="gauge-center-text" id="gaugePercentage">92%</div>
                         </div>
-                        <div class="route-badge" id="routeBadge">
-                            <span id="routeValue">⚡ FAST PATH</span>
+                        <div class="gauge-subtext" id="gaugeConfidenceGrade">High Precision</div>
+                    </div>
+
+                    <!-- 3. Classification Hero Card -->
+                    <div class="classification-hero-card">
+                        <div class="hero-meta-row">
+                            <div>
+                                <span class="specialty-highlight-title">Predicted Specialty Domain</span>
+                                <h3 id="specialtyValue" class="specialty-hero-name">Cardiovascular / Pulmonary</h3>
+                            </div>
+                            <div id="routeBadgePill" class="route-velocity-pill fastpath">
+                                <span id="routeValue">⚡ FAST PATH</span>
+                            </div>
+                        </div>
+                        <div class="model-provenance-bar">
+                            <span>Inference Engine:</span>
+                            <strong class="model-tag" id="modelUsedText">DistilBERT Fine-Tuned</strong>
+                            <span style="margin-left: auto; font-size: 0.72rem;" id="routeReasonText">Confidence ≥ 75% Streamlined</span>
                         </div>
                     </div>
-                    <div class="model-info" id="modelUsedText">Inference Model: DistilBERT Fine-Tuned</div>
+
                 </div>
 
-                <!-- Agent Pipeline Execution Visualizer -->
-                <div class="agent-timeline-card">
-                    <h4>Agentic Workflow Execution</h4>
-                    <div class="timeline-steps" id="timelineSteps">
+                <!-- Multi-Agent Neural Flowgraph Visualizer -->
+                <div class="agent-flowgraph-card">
+                    <div class="flowgraph-header">
+                        <h4><span>🧠</span> 8-Agent Neural Orchestration Graph</h4>
+                        <span class="flowgraph-badge" id="flowgraphStatusBadge">STATE: SYNCHRONIZED</span>
+                    </div>
+                    <div class="neural-nodes-row" id="neuralNodesContainer">
+                        <!-- Populated dynamically via app.js -->
+                    </div>
+                </div>
+
+                <!-- Clinical NLP Entity Deep Inspector -->
+                <div class="entity-inspector-card">
+                    <div class="panel-header" style="margin-bottom: 0.5rem;">
+                        <div class="panel-title-group">
+                            <h2 style="font-size: 1rem;"><span>🔬</span> Extracted Clinical NLP Entities</h2>
+                        </div>
+                    </div>
+                    <div class="entity-grid">
+                        <div class="entity-category">
+                            <div class="category-header">
+                                <span style="color: var(--rose-alert);">●</span> Symptoms & Complaints
+                            </div>
+                            <div class="entity-chips-container" id="symptomsChips"></div>
+                        </div>
+                        <div class="entity-category">
+                            <div class="category-header">
+                                <span style="color: var(--cyan-glow);">●</span> Vitals & Biomarkers
+                            </div>
+                            <div class="entity-chips-container" id="vitalsChips"></div>
+                        </div>
+                        <div class="entity-category">
+                            <div class="category-header">
+                                <span style="color: var(--violet-neural);">●</span> Diagnostic Tests
+                            </div>
+                            <div class="entity-chips-container" id="testsChips"></div>
+                        </div>
+                        <div class="entity-category">
+                            <div class="category-header">
+                                <span style="color: var(--emerald-green);">●</span> Medications & Rx
+                            </div>
+                            <div class="entity-chips-container" id="medsChips"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patient-Friendly Explanation Hub & TTS Audio Deck -->
+                <div class="explanation-hub-card">
+                    <div class="explanation-top-bar">
+                        <h4 style="font-size: 1rem; color: #fff;"><span>💬</span> Plain-English Patient Explanation</h4>
+                        
+                        <!-- TTS Controller -->
+                        <div class="tts-deck">
+                            <button id="ttsPlayBtn" class="tts-action-btn" title="Listen to Patient Summary">
+                                <span>🔊</span> Read Aloud
+                            </button>
+                            <button id="ttsStopBtn" class="tts-action-btn stop" style="display: none;" title="Stop Voice Audio">
+                                <span>⏹</span> Stop
+                            </button>
+                            <select id="ttsSpeedSelect" class="tts-speed-selector" title="Speech Playback Rate">
+                                <option value="0.85">0.85x</option>
+                                <option value="1.0" selected>1.0x (Normal)</option>
+                                <option value="1.15">1.15x</option>
+                                <option value="1.3">1.3x</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="explanation-content-body" id="explanationText">
                         <!-- Populated dynamically -->
-                    </div>
-                </div>
-
-                <!-- Extracted Entities Section -->
-                <div class="entities-card">
-                    <h4>Clinical NLP Entities Extracted</h4>
-                    <div class="chips-group" id="entitiesChips">
-                        <!-- Populated dynamically -->
-                    </div>
-                </div>
-
-                <!-- Patient-Friendly Explanation -->
-                <div class="explanation-card">
-                    <div class="card-title-bar">
-                        <h4>Patient-Friendly Explanation</h4>
-                        <!-- Text-to-Speech Controls -->
-                        <div class="tts-controls">
-                            <button id="ttsPlayBtn" class="tts-btn" title="Read Aloud">🔊 Read Aloud</button>
-                            <button id="ttsStopBtn" class="tts-btn hidden" title="Stop Reading">⏹ Stop</button>
-                        </div>
-                    </div>
-                    <div class="explanation-body" id="explanationText">
-                        <!-- Markdown text rendered dynamically -->
                     </div>
                 </div>
 
                 <!-- Evidence & RAG Citations Drawer -->
-                <div class="evidence-card">
-                    <h4>Vetted RAG Evidence & Citations</h4>
-                    <div class="evidence-list" id="evidenceList">
+                <div class="evidence-drawer-card">
+                    <h4 style="font-size: 0.92rem; color: #fff;"><span>📚</span> Vetted Clinical Knowledge & RAG Citations</h4>
+                    <div class="evidence-passages" id="evidenceList">
                         <!-- Populated dynamically -->
                     </div>
                 </div>
 
-                <!-- Safety Verification Banner -->
-                <div class="safety-card" id="safetyCard">
-                    <div class="safety-status-row">
-                        <span class="safety-icon">🛡️</span>
-                        <span class="safety-title">Safety Verification Guardrails: <strong>PASSED</strong></span>
+                <!-- Safety Verification Beacon -->
+                <div class="safety-beacon-card" id="safetyCard">
+                    <div class="safety-shield-icon">🛡️</div>
+                    <div class="safety-text-group">
+                        <h5>Clinical Safety & Guardrails: <strong>VERIFIED</strong></h5>
+                        <p>Strict non-diagnostic tone enforced, medication integrity validated, and mandatory clinical disclaimers attached.</p>
                     </div>
-                    <p class="safety-desc">Enforced non-diagnostic tone, verified zero medication alterations, and attached required clinical provider disclaimers.</p>
                 </div>
 
             </div>
+
         </section>
 
     </main>
 
-    <footer class="app-footer">
-        <p>MedReport Copilot Platform • Agentic AI Multi-Agent Architecture • DistilBERT Fine-Tuned NLP + LangGraph Routing</p>
+    <!-- Modal: Multi-Agent JSON Telemetry Inspector -->
+    <div class="modal-backdrop" id="jsonModal">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>Multi-Agent Pipeline Telemetry (JSON)</h3>
+                <button class="modal-close-btn" id="btnCloseJsonModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <pre class="json-pre-viewer" id="jsonTelemetryViewer"></pre>
+            </div>
+            <div class="modal-footer">
+                <button class="header-action-btn" id="btnCopyJson">📋 Copy JSON</button>
+                <button class="header-action-btn" id="btnCloseJsonModal2">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="cockpit-footer">
+        <p>MedReport Copilot • High-Performance Agentic AI Medical Report Comprehension • DistilBERT ML + LangGraph Deep Agent Orchestrator</p>
     </footer>
 
+    <!-- Frontend Engine Script -->
     <script src="/static/app.js"></script>
 </body>
 </html>

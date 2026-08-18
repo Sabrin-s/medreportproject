@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -74,35 +74,51 @@ async def health_check():
     }
 
 @app.post("/api/analyze")
-async def analyze_report(
-    text: Optional[str] = Form(None),
-    file: Optional[UploadFile] = File(None)
-):
+async def analyze_report(request: Request):
     """
     Main Report Processing Endpoint.
-    Accepts raw text or PDF/Audio file upload.
+    Accepts JSON body, FormData text, or PDF/Audio file upload.
     Routes execution through the Deep Agent Orchestrator.
     """
     extracted_text = ""
     input_type = "text"
 
-    if file:
-        file_bytes = await file.read()
-        filename = file.filename.lower() if file.filename else ""
-        
-        if filename.endswith(".pdf"):
-            input_type = "pdf"
-            extracted_text = DocumentProcessorService.extract_text_from_pdf_bytes(file_bytes)
-        elif any(filename.endswith(ext) for ext in [".wav", ".mp3", ".m4a", ".webm", ".ogg"]):
-            input_type = "audio"
-            stt_res = stt_service.transcribe_audio_bytes(file_bytes, filename)
-            extracted_text = stt_res.get("text", "")
-        else:
-            # Fallback plain text read
-            input_type = "text_file"
-            extracted_text = file_bytes.decode("utf-8", errors="ignore")
-    elif text:
-        extracted_text = text.strip()
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        try:
+            body = await request.json()
+            extracted_text = body.get("content") or body.get("text") or ""
+            input_type = body.get("input_type", "text")
+        except Exception as e:
+            print(f"[Analyze API] JSON parse error: {e}")
+    else:
+        try:
+            form = await request.form()
+            if "pdf_file" in form and hasattr(form["pdf_file"], "read"):
+                uploaded_file = form["pdf_file"]
+            elif "file" in form and hasattr(form["file"], "read"):
+                uploaded_file = form["file"]
+            else:
+                uploaded_file = None
+
+            if uploaded_file:
+                file_bytes = await uploaded_file.read()
+                filename = (uploaded_file.filename or "").lower()
+                if filename.endswith(".pdf"):
+                    input_type = "pdf"
+                    extracted_text = DocumentProcessorService.extract_text_from_pdf_bytes(file_bytes)
+                elif any(filename.endswith(ext) for ext in [".wav", ".mp3", ".m4a", ".webm", ".ogg"]):
+                    input_type = "audio"
+                    stt_res = stt_service.transcribe_audio_bytes(file_bytes, filename)
+                    extracted_text = stt_res.get("text", "")
+                else:
+                    input_type = "text_file"
+                    extracted_text = file_bytes.decode("utf-8", errors="ignore")
+
+            if not extracted_text and "text" in form:
+                extracted_text = str(form["text"]).strip()
+        except Exception as e:
+            print(f"[Analyze API] Form parse error: {e}")
 
     if not extracted_text:
         raise HTTPException(status_code=400, detail="No medical report text or valid document provided.")
@@ -115,6 +131,32 @@ async def analyze_report(
         "content": cleaned_text
     })
     
+    result["raw_input_text"] = cleaned_text
+    return result
+
+@app.post("/api/analyze-audio")
+async def analyze_audio(
+    audio_file: Optional[UploadFile] = File(None),
+    file: Optional[UploadFile] = File(None)
+):
+    """Endpoint specifically for voice dictation audio analysis."""
+    target_file = audio_file or file
+    if not target_file:
+        raise HTTPException(status_code=400, detail="No audio file uploaded.")
+    
+    file_bytes = await target_file.read()
+    filename = target_file.filename or "dictation.wav"
+    stt_res = stt_service.transcribe_audio_bytes(file_bytes, filename)
+    extracted_text = stt_res.get("text", "")
+
+    if not extracted_text:
+        raise HTTPException(status_code=400, detail="Could not transcribe audio dictation.")
+
+    cleaned_text = DocumentProcessorService.clean_medical_text(extracted_text)
+    result = orchestrator.run({
+        "input_type": "audio",
+        "content": cleaned_text
+    })
     result["raw_input_text"] = cleaned_text
     return result
 
