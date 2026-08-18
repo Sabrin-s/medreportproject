@@ -1,0 +1,10 @@
+TITLE: Cardiovascular and Pulmonary Clinical Guidelines
+SOURCE: American College of Cardiology & AHA Clinical Standards
+TOPIC: Electrocardiogram (ECG), Troponin, and Chest Pain Assessment
+
+SUMMARY:
+1. Normal resting heart rate for adults ranges between 60 and 100 beats per minute (bpm). Sinus tachycardia is defined as a sinus rhythm with a rate exceeding 100 bpm.
+2. ST-segment elevation on a 12-lead ECG may indicate acute myocardial injury or infarction. Nonspecific ST-T wave changes require clinical correlation with cardiac biomarkers.
+3. Serum Troponin I and T are highly sensitive biomarkers for myocardial infarction. An elevated troponin level indicates cardiac cell injury but must be interpreted in clinical context alongside symptoms and serial ECGs.
+4. Ejection Fraction (EF) measures the percentage of blood pumped out of the left ventricle with each contraction. A normal LVEF is 55% to 70%.
+5. Patient communication guideline: Medical reports noting elevated enzymes or abnormal ECG waves describe laboratory and electrical observations. Clinicians evaluate these findings in conjunction with physical examination and coronary history.

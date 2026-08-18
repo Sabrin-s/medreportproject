@@ -1,0 +1,9 @@
+TITLE: Gastroenterology and Hepatic Imaging Guidelines
+SOURCE: American College of Gastroenterology Clinical Handbook
+TOPIC: Endoscopy, Abdominal Ultrasound, Liver Enzymes (ALT/AST)
+
+SUMMARY:
+1. Alanine aminotransferase (ALT) and Aspartate aminotransferase (AST) are enzymes primarily concentrated in hepatocytes. Elevated levels reflect liver cell irritation or injury.
+2. Hepatic steatosis (fatty liver) detected on abdominal ultrasound indicates lipid accumulation in liver parenchyma. Grade 1 is mild and often reversible through lifestyle interventions.
+3. Upper endoscopy (EGD) visualizes the esophageal, gastric, and duodenal mucosa. Erythema or mild gastritis describes superficial inflammation of the stomach lining.
+4. Patient communication guideline: Elevated liver enzymes describe laboratory values above reference ranges. They necessitate diagnostic context including alcohol intake, medication review, and metabolic status.

@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: medreport-copilot
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: FAST_PATH_CONFIDENCE_THRESHOLD
+        value: 0.75

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedReport Copilot — Agentic AI Medical Report Understanding Platform</title>
+    <meta name="description" content="Agentic AI platform for medical report comprehension, intelligent inference routing, RAG evidence retrieval, fact checking, safety verification, and TTS.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">✚</div>
+                <div class="brand-text">
+                    <h1>MedReport Copilot</h1>
+                    <span class="brand-subtitle">Agentic AI Medical Report Understanding Platform</span>
+                </div>
+            </div>
+            <div class="header-status">
+                <div id="systemHealthBadge" class="health-badge pulse">
+                    <span class="dot"></span> System Ready
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="app-layout">
+        
+        <!-- Left Panel: Input & Control -->
+        <section class="panel input-panel">
+            <div class="panel-header">
+                <h2>1. Report Intake</h2>
+                <p>Provide clinical report text, upload a PDF file, or dictate voice audio.</p>
+            </div>
+
+            <!-- Input Tabs -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="textTab" id="tabBtnText">Paste Text</button>
+                <button class="tab-btn" data-tab="pdfTab" id="tabBtnPdf">Upload PDF</button>
+                <button class="tab-btn" data-tab="voiceTab" id="tabBtnVoice">🎙 Record Voice</button>
+            </div>
+
+            <!-- Tab 1: Text Input -->
+            <div class="tab-content active" id="textTab">
+                <label for="reportTextInput" class="input-label">Clinical Report Content</label>
+                <textarea id="reportTextInput" placeholder="Paste medical report, ECG findings, laboratory results, or radiological report here..." rows="9"></textarea>
+                
+                <div class="preset-buttons">
+                    <span class="preset-label">Sample Presets:</span>
+                    <button class="preset-btn" onclick="loadPreset('cardio')">Cardiology ECG</button>
+                    <button class="preset-btn" onclick="loadPreset('neuro')">Neurology MRI</button>
+                    <button class="preset-btn" onclick="loadPreset('gastro')">Gastroenterology</button>
+                </div>
+            </div>
+
+            <!-- Tab 2: PDF Upload -->
+            <div class="tab-content" id="pdfTab">
+                <div class="drop-zone" id="pdfDropZone">
+                    <div class="drop-icon">📄</div>
+                    <p class="drop-title">Drag & drop your PDF medical report here</p>
+                    <p class="drop-sub">or click to browse files (.pdf)</p>
+                    <input type="file" id="pdfFileInput" accept=".pdf" hidden>
+                    <div id="pdfFileSelected" class="file-selected-name"></div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Voice Dictation -->
+            <div class="tab-content" id="voiceTab">
+                <div class="voice-recorder">
+                    <div class="mic-container">
+                        <button id="recordMicBtn" class="mic-btn">
+                            <span class="mic-icon">🎙</span>
+                        </button>
+                    </div>
+                    <div id="recordStatus" class="record-status">Click microphone to start recording dictation</div>
+                    <div id="recordingTimer" class="record-timer">00:00</div>
+                </div>
+            </div>
+
+            <!-- Analyze Action Button -->
+            <button id="analyzeBtn" class="primary-btn">
+                <span id="analyzeBtnText">⚡ Analyze Report with Copilot</span>
+                <span id="analyzeSpinner" class="spinner hidden"></span>
+            </button>
+        </section>
+
+        <!-- Right Panel: Results & Agentic Insights -->
+        <section class="panel results-panel">
+            
+            <!-- Default Welcome State -->
+            <div id="emptyState" class="empty-state">
+                <div class="empty-icon">🏥</div>
+                <h3>Ready to Analyze Clinical Data</h3>
+                <p>Paste a medical report or select a sample preset on the left to trigger the 8-agent orchestration pipeline, confidence-based routing, and RAG verification.</p>
+            </div>
+
+            <!-- Live Results Container -->
+            <div id="resultsContainer" class="results-container hidden">
+                
+                <!-- Classification & Route Header -->
+                <div class="results-header-card">
+                    <div class="meta-row">
+                        <div class="specialty-badge" id="specialtyBadge">
+                            <span class="badge-label">Specialty:</span>
+                            <span id="specialtyValue" class="badge-value">Cardiovascular / Pulmonary</span>
+                        </div>
+                        <div class="confidence-badge" id="confidenceBadge">
+                            <span id="confidenceValue">91.2% Confidence</span>
+                        </div>
+                        <div class="route-badge" id="routeBadge">
+                            <span id="routeValue">⚡ FAST PATH</span>
+                        </div>
+                    </div>
+                    <div class="model-info" id="modelUsedText">Inference Model: DistilBERT Fine-Tuned</div>
+                </div>
+
+                <!-- Agent Pipeline Execution Visualizer -->
+                <div class="agent-timeline-card">
+                    <h4>Agentic Workflow Execution</h4>
+                    <div class="timeline-steps" id="timelineSteps">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Extracted Entities Section -->
+                <div class="entities-card">
+                    <h4>Clinical NLP Entities Extracted</h4>
+                    <div class="chips-group" id="entitiesChips">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Patient-Friendly Explanation -->
+                <div class="explanation-card">
+                    <div class="card-title-bar">
+                        <h4>Patient-Friendly Explanation</h4>
+                        <!-- Text-to-Speech Controls -->
+                        <div class="tts-controls">
+                            <button id="ttsPlayBtn" class="tts-btn" title="Read Aloud">🔊 Read Aloud</button>
+                            <button id="ttsStopBtn" class="tts-btn hidden" title="Stop Reading">⏹ Stop</button>
+                        </div>
+                    </div>
+                    <div class="explanation-body" id="explanationText">
+                        <!-- Markdown text rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- Evidence & RAG Citations Drawer -->
+                <div class="evidence-card">
+                    <h4>Vetted RAG Evidence & Citations</h4>
+                    <div class="evidence-list" id="evidenceList">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Safety Verification Banner -->
+                <div class="safety-card" id="safetyCard">
+                    <div class="safety-status-row">
+                        <span class="safety-icon">🛡️</span>
+                        <span class="safety-title">Safety Verification Guardrails: <strong>PASSED</strong></span>
+                    </div>
+                    <p class="safety-desc">Enforced non-diagnostic tone, verified zero medication alterations, and attached required clinical provider disclaimers.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="app-footer">
+        <p>MedReport Copilot Platform • Agentic AI Multi-Agent Architecture • DistilBERT Fine-Tuned NLP + LangGraph Routing</p>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

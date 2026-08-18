@@ -1,0 +1,9 @@
+TITLE: General Laboratory Reference & Diagnostic Values
+SOURCE: Clinical Laboratory Standards Institute (CLSI) Guide
+TOPIC: Complete Blood Count (CBC), Metabolic Panel, Hemoglobin A1c
+
+SUMMARY:
+1. Complete Blood Count (CBC) evaluates red blood cells (RBC), white blood cells (WBC), and platelets. White blood cell elevation (leukocytosis) frequently indicates immune response, infection, or physiological stress.
+2. Fasting Plasma Glucose >= 126 mg/dL or Hemoglobin A1c >= 6.5% are diagnostic criteria for Diabetes Mellitus. Values between 5.7% and 6.4% indicate Prediabetes.
+3. Serum Creatinine and Blood Urea Nitrogen (BUN) reflect renal filtration capacity. Mild elevations should be correlated with hydration status and current medications.
+4. Patient communication guideline: Lab test reference ranges represent statistical averages of healthy populations. An out-of-range flag does not equate to a definitive disease diagnosis without clinical correlation.

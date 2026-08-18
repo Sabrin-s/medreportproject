@@ -1,0 +1,9 @@
+TITLE: Neurology and Brain MRI Clinical Reference
+SOURCE: American Academy of Neurology Reference Manual
+TOPIC: MRI Brain Findings, White Matter Hyperintensities, Electroencephalogram (EEG)
+
+SUMMARY:
+1. T2/FLAIR hyperintensities in cerebral white matter are common non-specific neuroimaging findings. They may represent microvascular ischemic changes, demyelination, or age-related gliosis.
+2. An Electroencephalogram (EEG) measures brain electrical activity. Interictal epileptiform discharges suggest heightened cortical excitability.
+3. Ventricular size and sulcal patterns evaluate age-appropriate cerebral volume. Mild age-related involutional changes do not necessarily indicate rapid cognitive decline.
+4. Patient communication guideline: MRI findings describing "white matter hyperintensities" describe tissue signal characteristics on scan sequences, requiring correlation with neurological examination.

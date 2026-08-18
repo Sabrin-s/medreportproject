@@ -1,0 +1,17 @@
+services:
+  medreport-copilot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: medreport-copilot:latest
+    container_name: medreport_copilot_app
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - FAST_PATH_CONFIDENCE_THRESHOLD=0.75
+    volumes:
+      - ./models:/app/models
+      - ./data/knowledge:/app/data/knowledge
+    restart: unless-stopped
