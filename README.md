@@ -1,4 +1,4 @@
-# MedReport Copilot — Agentic AI Medical Report Understanding Platform
+# MedReport Copilot  Agentic AI Medical Report Understanding Platform
 
 **MedReport Copilot** is a high-performance, agentic AI platform designed to ingest complex medical reports (PDF, plain text, or voice dictation audio), perform fine-tuned ML medical specialty classification, execute confidence-based inference routing, orchestrate an 8-agent pipeline (or Deep Agent / LangGraph orchestrator), cross-verify with RAG evidence, enforce strict clinical safety guardrails, and present patient-friendly explanations with browser Text-to-Speech (TTS).
 
